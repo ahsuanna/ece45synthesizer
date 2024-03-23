@@ -35,7 +35,7 @@ ylim([-1, 1]);
 freq = 440; %can be changed to increase the pitch
 input = sin(2*pi*freq*t); %can be changed into other types of waves?, this doesn't really do anything it just shows what the input wave is
 
-lfo_input = zeros(size(sound_file));
+x = zeros(size(sound_file));
 
 for i = 1:length(k)-1
     lfo_square2 = sampled_values(i) * squareWave(k(i):k(i+1)-1);
