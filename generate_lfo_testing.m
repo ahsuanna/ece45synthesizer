@@ -52,4 +52,58 @@ ylabel('Amplitude');
 title('LFO Applied to Input Wave');
 ylim([-1, 1]);
 
+%==========================Removing Noise Code============================
+
+x1 = x.';
+f_lower = 1400; %1400
+f_upper = 20000; %20000
+y = fft(x1);
+f1 = fs*(0:(n-1))/n;
+
+filter = zeros(1,n);
+filter(f1<f_lower) = 1;
+filter(f1>f_upper) = 1;
+
+x_filteredf = y .* filter;
+x_filtered = real(ifft(x_filteredf));
+
+figure (2);
+
+subplot(2,1,1);
+plot(f1, abs(y), 'b');
+xlabel('Frequency (Hz)');
+ylabel('Amplitude');
+title('Frequency Domain');
+xlim
+
+subplot(2,1,2);
+plot(t,x_filtered,'m');
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Time Domain');
+
+%==========================Adding Noise Code==============================
+%Noise figures
+figure (4)
+subplot(2,1,1);
+plot(x);
+ylim([-1, 1]);
+title('Sigal with no noise');
+
+% Add impulsive noise
+percentOfNoise = 0.0; % Ex: 0.1 = 10% noise being added, at 0.0 or 0% no 
+                      %noise is being added, so the sound plays normally
+
+noiseAmplitude = percentOfNoise * x;
+x = x + noiseAmplitude .* rand(size(x));
+
+figure (4)
+subplot(2,1,2);
+plot(x);
+ylim([-1, 1]);
+title('Sigal with noise');
+
+%=======================================================================
+
+
 soundsc(x, fs);
