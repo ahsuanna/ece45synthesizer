@@ -52,4 +52,95 @@ ylabel('Amplitude');
 title('LFO Applied to Input Wave');
 ylim([-1, 1]);
 
+%==========================Removing Noise Code============================
+
+%Sorry my code is messy and kind of hard to follow, feel free to change 
+%or delete whatever, I don't think I got any of it to really work
+
+%My FT's didnt work ~ I may have been doing it wrong
+
+%My attempt at plotting a FT of x
+Len = length(x); %length
+freq2 = freq * f0; 
+f_1 = freq*(-Len/2:Len/2-1)/Len;
+mFreq = fft(x); %FT of x
+
+figure (2);
+subplot(4,1,1);
+plot(f_1, abs(fftshift(mFreq)));
+xlim([0 50])
+ylim([0 2500])
+xlabel("Frequency Hz");
+ylabel("Amplitude");
+
+P2 = abs(mFreq/Len);
+P1 = P2(1:Len/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+
+f_2 = freq*(0:(Len/2))/Len;
+
+figure (2)
+subplot(4,1,2);
+plot(f_2, P1);
+xlim([0 50])
+
+f_3 = (0:length(mFreq)-1*freq/length(mFreq));
+
+figure (2)
+subplot(4, 1, 3);
+plot(f_3, abs(mFreq));
+xlim([0 5000])
+
+
+%figure (2)
+%subplot(4,1,4);
+%plot(x, fs);
+%xlim([0 2000])
+
+
+
+%Attempted bandpass filter
+
+%Can change these variables to change bandpass begin and end frequencies
+tpass = 1;
+bpass = 40;
+
+tfill = tpass;
+bfill = bpass;
+
+
+figure(3);
+bandpass(x, [tfill bfill], freq);
+
+
+
+%soundsc(x,fs);
+
+%==========================Adding Noise Code==============================
+%This should be working, just adjust 'percentOfNoise' from 0.0-0.99
+
+%Noise figures
+figure (4)
+subplot(2,1,1);
+plot(x);
+ylim([-1, 1]);
+title('Sigal with no noise');
+
+% Add impulsive noise
+percentOfNoise = 0.0; % Ex: 0.1 = 10% noise being added, at 0.0 or 0% no 
+                      %noise is being added, so the sound plays normally
+
+noiseAmplitude = percentOfNoise * x;
+x = x + noiseAmplitude .* rand(size(x));
+
+figure (4)
+subplot(2,1,2);
+plot(x);
+ylim([-1, 1]);
+title('Sigal with noise');
+
+%=======================================================================
+
+
+%Sound output
 soundsc(x, fs);
